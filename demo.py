@@ -2,6 +2,7 @@ import tweepy
 from textblob import TextBlob
 
 # Step 1 - Authenticate
+
 consumer_key= 'CONSUMER_KEY_HERE'
 consumer_secret= 'CONSUMER_SECRET_HERE'
 
@@ -13,20 +14,23 @@ auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth)
 
-#Step 3 - Retrieve Tweets
-public_tweets = api.search('Trump')
+#Step 2 - Define labelling function
 
-
-
-#CHALLENGE - Instead of printing out each tweet, save each Tweet to a CSV file
-#and label each one as either 'positive' or 'negative', depending on the sentiment 
-#You can decide the sentiment polarity threshold yourself
-
-
-for tweet in public_tweets:
-    print(tweet.text)
+def label (analysis, threshold = 0):
+    if analysis.sentiment [0] > threshold:
+        return 'Positive'
+    else:
+        return 'Negative'
     
-    #Step 4 Perform Sentiment Analysis on Tweets
-    analysis = TextBlob(tweet.text)
-    print(analysis.sentiment)
-    print("")
+#Step 3 - Retrieve Tweets
+public_tweets = api.search('Infinity War')
+
+#Step 4 Perform Sentiment Analysis on Tweets and write to csv file
+with open('InfinityWarTweet.csv', 'w') as file:
+    file.write("tweet, sentiment_label\n")
+    for tweet in public_tweets:
+        analysis = TextBlob(tweet.text)
+        file.write('%s,%s\n' %(tweet.text.encode('utf8'), label(analysis)))
+
+
+
